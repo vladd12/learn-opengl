@@ -10,12 +10,12 @@
 /// Shaders
 #include <shaders/triangle_shaders.hpp>
 
-std::pair<GLuint, GLuint> createVertexObjects();
+GLuint createVertexObjects();
 GLuint compileShaders();
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
-void processRender(GLFWwindow *window, GLuint shaderProgram, GLuint VAO, GLuint VBO);
+void processRender(GLFWwindow *window, GLuint shaderProgram, GLuint vao);
 
 int main(int argc, char *argv[])
 {
@@ -43,8 +43,13 @@ int main(int argc, char *argv[])
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // shaders
-    auto [vao, vbo] = createVertexObjects();
+    auto vao = createVertexObjects();
     auto shaderProgram = compileShaders();
+
+    // Enabling wireframe mode
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // Enabling normal render mode
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // render loop
     while (!glfwWindowShouldClose(window))
@@ -53,7 +58,7 @@ int main(int argc, char *argv[])
         processInput(window);
 
         // rendering commands her
-        processRender(window, shaderProgram, vao, vbo);
+        processRender(window, shaderProgram, vao);
 
         // check and call events and swap the buffers
         glfwSwapBuffers(window);
@@ -65,29 +70,42 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-std::pair<GLuint, GLuint> createVertexObjects()
+GLuint createVertexObjects()
 {
-    const float vertices[] = {
-        -0.5f, -0.5f, 0.0f, //
-        0.5f, -0.5f, 0.0f,  //
-        0.0f, 0.5f, 0.0f    //
+    float vertices[] = {
+        0.5f, 0.5f, 0.0f,   // top right
+        0.5f, -0.5f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f, // bottom left
+        -0.5f, 0.5f, 0.0f   // top left
     };
 
-    GLuint VAO;                 // vertex array object
-    glGenVertexArrays(1, &VAO); // generate vertex array ID
-    glBindVertexArray(VAO);
+    // note that we start from 0!
+    unsigned int indices[] = {
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+    };
 
-    GLuint VBO;            // vertex buffer object (VBO)
-    glGenBuffers(1, &VBO); // generate buffer ID
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    GLuint vao;                 // vertex array object (VAO)
+    glGenVertexArrays(1, &vao); // generate vertex array with 1 object
+    glBindVertexArray(vao);
 
+    GLuint vbo;            // vertex buffer object (VBO)
+    glGenBuffers(1, &vbo); // generate buffer object with 1 object
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     // copy vertices array in a buffer
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    GLuint ebo;            // element buffer object (EBO)
+    glGenBuffers(1, &ebo); // generate buffer object with 1 object
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    // copy index array in a element buffer
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
     // set the vertex attributes pointers
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
 
-    return { VAO, VBO };
+    return vao;
 }
 
 GLuint compileShaders()
@@ -152,7 +170,7 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, true);
 }
 
-void processRender(GLFWwindow *window, GLuint shaderProgram, GLuint VAO, GLuint VBO)
+void processRender(GLFWwindow *window, GLuint shaderProgram, GLuint vao)
 {
     // Clear screen
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -160,6 +178,8 @@ void processRender(GLFWwindow *window, GLuint shaderProgram, GLuint VAO, GLuint 
 
     // Use shader programm
     glUseProgram(shaderProgram);
-    glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    // Draw elements from ebo
+    glBindVertexArray(vao);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }
