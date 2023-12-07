@@ -14,6 +14,38 @@ include(get_glfw)  # Getting GLFW library
 
 add_subdirectory(glad) # Getting GLAD library
 
+set(GL3D_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/gl3d")
+set(GL3D_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/gl3d")
+
+set(GL3D_PUBLIC_HEADERS "${GL3D_INCLUDE_DIR}/window.h")
+set(GL3D_PRIVATE_HEADERS
+  "${GL3D_SRC_DIR}/private/singleton.h"
+  "${GL3D_SRC_DIR}/private/global_init.h"
+)
+set(GL3D_SOURCES
+  "${GL3D_SRC_DIR}/private/global_init.cpp"
+  "${GL3D_SRC_DIR}/window.cpp"
+)
+
+source_group(
+  TREE "${CMAKE_CURRENT_SOURCE_DIR}"
+  FILES ${GL3D_PUBLIC_HEADERS} ${GL3D_PRIVATE_HEADERS} ${GL3D_SOURCES}
+)
+
+add_library(gl3d STATIC
+  ${GL3D_PUBLIC_HEADERS}
+  ${GL3D_PRIVATE_HEADERS}
+  ${GL3D_SOURCES}
+)
+
+target_include_directories(gl3d PUBLIC
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+target_include_directories(gl3d PRIVATE
+  "$<BUILD_INTERFACE:${GL3D_SRC_DIR}>")
+
+target_link_libraries(gl3d PRIVATE glad::glad glfw::glfw)
+
 # Collecting project's sources
 set(LEARN_OPENGL_SOURCES
     src/main.cpp
