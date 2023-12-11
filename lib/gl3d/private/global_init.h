@@ -15,8 +15,9 @@ public:
     explicit GlobalInit(token) noexcept;
     ~GlobalInit() noexcept;
 
-    bool status() const noexcept;
     void reinit() noexcept;
+
+    operator bool() const noexcept;
 };
 
 } // namespace GL3D

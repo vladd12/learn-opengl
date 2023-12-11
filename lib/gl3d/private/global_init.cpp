@@ -15,15 +15,15 @@ GlobalInit::~GlobalInit() noexcept
     glfwTerminate();
 }
 
-bool GlobalInit::status() const noexcept
-{
-    return initStatus;
-}
-
 void GlobalInit::reinit() noexcept
 {
     glfwTerminate();
     initStatus = glfwInit();
+}
+
+GlobalInit::operator bool() const noexcept
+{
+    return initStatus;
 }
 
 } // namespace GL3D
