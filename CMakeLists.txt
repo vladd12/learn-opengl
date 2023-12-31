@@ -6,11 +6,16 @@ project(learn-opengl VERSION 0.1 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# CMake's fetch content options
+include(FetchContent)
+set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
+
 # Adding path for cmake scripts
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
 include(get_gtest) # Getting googletest library
 include(get_glfw)  # Getting GLFW library
+include(get_conan) # Getting CMake conan
+include(get_boost) # Getting boost library
 
 add_subdirectory(glad) # Getting GLAD library
 

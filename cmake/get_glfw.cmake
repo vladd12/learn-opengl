@@ -1,7 +1,3 @@
-include(FetchContent)
-
-set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
-
 # Getting GLFW sources from GitHub repository
 FetchContent_Declare(
     glfw
