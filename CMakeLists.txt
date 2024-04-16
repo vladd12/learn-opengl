@@ -16,7 +16,6 @@ include(get_gtest) # Getting googletest library
 include(get_glfw)  # Getting GLFW library
 include(get_conan) # Getting CMake conan
 include(get_boost) # Getting boost library
-
 add_subdirectory(glad) # Getting GLAD library
 
 set(GL3D_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/gl3d")

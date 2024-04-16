@@ -16,6 +16,7 @@ GLuint compileShaders();
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 void processRender(GLFWwindow *window, GLuint shaderProgram, GLuint vao);
+void changeRenderMode();
 
 int main(int argc, char *argv[])
 {
@@ -47,9 +48,10 @@ int main(int argc, char *argv[])
     auto shaderProgram = compileShaders();
 
     // Enabling wireframe mode
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     // Enabling normal render mode
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    changeRenderMode();
 
     // render loop
     while (!glfwWindowShouldClose(window))
@@ -166,8 +168,35 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 
 void processInput(GLFWwindow *window)
 {
+    static bool pressed = false;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    auto keyStatus = glfwGetKey(window, GLFW_KEY_D);
+    switch (keyStatus)
+    {
+    case GLFW_PRESS:
+        if (!pressed)
+        {
+            pressed = true;
+            changeRenderMode();
+        }
+        break;
+    case GLFW_RELEASE:
+        if (pressed)
+            pressed = false;
+        break;
+    default:
+        std::cout << "Произошла какая-то хуйня :(";
+        break;
+    }
+}
+
+void changeRenderMode()
+{
+    static GLenum currentMode = GL_LINE;
+    currentMode = (currentMode == GL_FILL) ? GL_LINE : GL_FILL;
+    glPolygonMode(GL_FRONT_AND_BACK, currentMode);
 }
 
 void processRender(GLFWwindow *window, GLuint shaderProgram, GLuint vao)
