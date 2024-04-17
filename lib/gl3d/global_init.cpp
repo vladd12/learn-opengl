@@ -1,4 +1,6 @@
-#include "private/global_init.h"
+#include "gl3d/global_init.h"
+
+#include <GLFW/glfw3.h>
 
 namespace GL3D
 {

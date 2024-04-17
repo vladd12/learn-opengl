@@ -1,9 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <gl3d/utils/stack_pimpl.h>
 #include <string>
-
-struct GLFWwindow;
 
 namespace GL3D
 {
@@ -11,11 +10,11 @@ namespace GL3D
 class Window
 {
 private:
-    GLFWwindow *windowPtr;
+    struct WindowHolder;
+    utils::stack_pimpl<WindowHolder, sizeof(void *), alignof(void *)> holder;
 
 public:
     explicit Window(const std::uint16_t width, const std::uint16_t height, const std::string &title = "Window");
-    ~Window() noexcept;
 };
 
 } // namespace GL3D
