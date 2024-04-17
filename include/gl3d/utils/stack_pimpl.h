@@ -26,73 +26,73 @@ public:
     /// \brief Perfect forwarding for T c-tor's arguments.
     /// \details Placement new operator calling on stack allocated array.
     template <typename... Args> //
-    explicit stack_pimpl(Args &&...args) noexcept
+    inline explicit stack_pimpl(Args &&...args) noexcept
     {
         new (ptr()) T(std::forward<Args>(args)...);
     }
 
     /// \brief Move c-tor for T rvalue.
     /// \details Placement new operator calling on stack allocated array.
-    explicit stack_pimpl(T &&value) noexcept
+    inline explicit stack_pimpl(T &&value) noexcept
     {
         static_assert(std::is_trivial_v<T>, "T is not trivial type");
         new (ptr()) T(std::move(value));
     }
 
     /// \brief Calling T's d-tor.
-    ~stack_pimpl() noexcept
+    inline ~stack_pimpl() noexcept
     {
         validate<sizeof(T), alignof(T)>();
         ptr()->~T();
     }
 
     /// \brief Returns pointer to the holding object.
-    T *ptr() noexcept
+    inline T *ptr() noexcept
     {
         return reinterpret_cast<T *>(&data);
     }
 
     /// \brief Returns pointer to the holding object.
     /// \details Constant overload.
-    const T *ptr() const noexcept
+    inline const T *ptr() const noexcept
     {
         return reinterpret_cast<const T *>(&data);
     }
 
     /// \brief Assignment operator for moving the other stored object.
-    stack_pimpl &operator=(stack_pimpl &&rhs) noexcept
+    inline stack_pimpl &operator=(stack_pimpl &&rhs) noexcept
     {
         *ptr() = std::move(*rhs.ptr());
     }
 
     /// \brief Assignment operator for moving T rvalue in the current object.
-    stack_pimpl &operator=(T &&rhs) noexcept
+    inline stack_pimpl &operator=(T &&rhs) noexcept
     {
         *ptr() = std::move(rhs);
     }
 
     /// \brief Returns pointer to the holding object.
-    T *operator->() noexcept
+    inline T *operator->() noexcept
     {
         return ptr();
     }
 
     /// \brief Returns pointer to the holding object.
     /// \details Constant overload.
-    const T *operator->() const noexcept
+    inline const T *operator->() const noexcept
     {
         return ptr();
     }
 
     /// \brief Returns refernce to the holding object.
-    T &operator*() noexcept
+    inline T &operator*() noexcept
     {
         return *ptr();
     }
 
     /// \brief Returns refernce to the holding object.
     /// \details Constant overload.
-    const T &operator*() const noexcept
+    inline const T &operator*() const noexcept
     {
         return *ptr();
     }

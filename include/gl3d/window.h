@@ -15,6 +15,8 @@ private:
 
 public:
     explicit Window(const std::uint16_t width, const std::uint16_t height, const std::string &title = "Window");
+
+    void exec();
 };
 
 } // namespace GL3D

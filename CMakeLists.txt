@@ -52,10 +52,14 @@ target_include_directories(gl3d PUBLIC
 
 target_link_libraries(gl3d PRIVATE glad::glad glfw::glfw)
 
+add_subdirectory(tests)
+
+#####################################################
+
 # Collecting project's sources
 set(LEARN_OPENGL_SOURCES
-    src/main.cpp
-    src/shaders/triangle_shaders.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/shaders/triangle_shaders.hpp
 )
 
 # Creating executable target

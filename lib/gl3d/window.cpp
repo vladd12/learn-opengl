@@ -58,6 +58,19 @@ Window::Window(const std::uint16_t width, const std::uint16_t height, const std:
         throw std::runtime_error("Global context uninitialized");
 
     *holder = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+    if (!(*holder))
+        throw std::runtime_error("Failed to create GLFW window");
+    glfwMakeContextCurrent(*holder);
+}
+
+void Window::exec()
+{
+    while (!glfwWindowShouldClose(*holder))
+    {
+        // check and call events and swap the buffers
+        glfwSwapBuffers(*holder);
+        glfwPollEvents();
+    }
 }
 
 } // namespace GL3D
