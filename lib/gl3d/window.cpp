@@ -12,6 +12,7 @@ struct Window::WindowHolder
 private:
     GLFWwindow *fd;
 
+    /// \brief Destroys stored pointer if it's not NULL>
     inline void destroy() noexcept
     {
         if (fd)
@@ -19,15 +20,18 @@ private:
     }
 
 public:
+    /// \brief Default c-tor.
     inline explicit WindowHolder(GLFWwindow *ptr) noexcept : fd(ptr)
     {
     }
 
+    /// \brief Default d-tor.
     inline ~WindowHolder() noexcept
     {
         destroy();
     }
 
+    /// \brief Assignment operator for updating stored window pointer.
     inline WindowHolder &operator=(GLFWwindow *ptr) noexcept
     {
         destroy();
@@ -35,11 +39,13 @@ public:
         return *this;
     }
 
+    /// \brief Checks the current pointer stored in object.
     inline operator bool() noexcept
     {
         return fd;
     }
 
+    /// \brief Returns the stored pointer.
     inline operator GLFWwindow *() noexcept
     {
         return fd;

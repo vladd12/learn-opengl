@@ -14,7 +14,7 @@ struct stack_pimpl
 private:
     alignas(Alignment) std::uint8_t data[Size];
 
-    /// \brief Validate current PIMPL.
+    /// \brief Validate current specialisation in compile time.
     template <std::size_t ActualSize, std::size_t ActualAlignment> //
     static void validate() noexcept
     {
@@ -59,11 +59,13 @@ public:
         return reinterpret_cast<const T *>(&data);
     }
 
+    /// \brief Assignment operator for moving the other stored object.
     stack_pimpl &operator=(stack_pimpl &&rhs) noexcept
     {
         *ptr() = std::move(*rhs.ptr());
     }
 
+    /// \brief Assignment operator for moving T rvalue in the current object.
     stack_pimpl &operator=(T &&rhs) noexcept
     {
         *ptr() = std::move(rhs);
@@ -82,11 +84,14 @@ public:
         return ptr();
     }
 
+    /// \brief Returns refernce to the holding object.
     T &operator*() noexcept
     {
         return *ptr();
     }
 
+    /// \brief Returns refernce to the holding object.
+    /// \details Constant overload.
     const T &operator*() const noexcept
     {
         return *ptr();
