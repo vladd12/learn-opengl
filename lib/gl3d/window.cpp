@@ -52,19 +52,26 @@ public:
     }
 };
 
-Window::Window(const std::uint16_t width, const std::uint16_t height, const std::string &title) : holder(nullptr)
+Window::Window(const std::uint16_t width, const std::uint16_t height, const std::string &title)
 {
     if (!GlobalInit::GetInstance())
         throw std::runtime_error("Global context uninitialized");
 
+    auto holder = storage.start_lifetime_as<WindowHolder>(nullptr);
     *holder = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
     if (!(*holder))
         throw std::runtime_error("Failed to create GLFW window");
     glfwMakeContextCurrent(*holder);
 }
 
+Window::~Window() noexcept
+{
+    storage.end_lifetime_as<WindowHolder>();
+}
+
 void Window::exec()
 {
+    auto holder = storage.get_object_from_storage<WindowHolder>();
     while (!glfwWindowShouldClose(*holder))
     {
         // check and call events and swap the buffers
