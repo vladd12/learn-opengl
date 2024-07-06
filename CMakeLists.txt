@@ -24,6 +24,7 @@ set(GL3D_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/gl3d")
 set(GL3D_PUBLIC_HEADERS
     "${GL3D_INCLUDE_DIR}/global_init.h"
     "${GL3D_INCLUDE_DIR}/window.h"
+    "${GL3D_INCLUDE_DIR}/utils/aligned_storage.h"
     "${GL3D_INCLUDE_DIR}/utils/singleton.h"
     "${GL3D_INCLUDE_DIR}/utils/stack_pimpl.h"
 )
